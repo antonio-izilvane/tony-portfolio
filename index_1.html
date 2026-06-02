@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NIX // Antonio — Dev Portfolio</title>
+<title>TONY // Antonio — Dev Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -133,6 +133,8 @@ p{font-size:clamp(15px,1.4vw,18px);line-height:1.7;color:#bfe9f5;max-width:62ch;
 .card p{padding:0 24px;font-size:14px;color:#a9d6e3;min-height:84px}
 .card .tech{display:flex;flex-wrap:wrap;gap:8px;padding:16px 24px 24px}
 .card .tech span{font-family:var(--font-mono);font-size:11px;color:var(--hud);border:1px solid var(--hud-dim);padding:3px 9px;letter-spacing:.5px}
+.job .tech{display:flex;flex-wrap:wrap;gap:8px;padding:14px 0 0}
+.job .tech span{font-family:var(--font-mono);font-size:11px;color:var(--hud);border:1px solid var(--hud-dim);padding:3px 9px;letter-spacing:.5px}
 .card .scanline{position:absolute;left:0;right:0;height:2px;background:var(--hud);box-shadow:0 0 12px var(--hud-glow);opacity:0;animation:cardscan 4s linear infinite}
 .card:hover .scanline{opacity:.6}
 @keyframes cardscan{0%{top:0}100%{top:100%}}
@@ -142,6 +144,20 @@ p{font-size:clamp(15px,1.4vw,18px);line-height:1.7;color:#bfe9f5;max-width:62ch;
 .comms{display:flex;gap:22px;margin-top:34px;flex-wrap:wrap;justify-content:center}
 .comms a{font-family:var(--font-mono);font-size:14px;color:var(--hud);text-decoration:none;border:1px solid var(--hud-dim);padding:14px 28px;letter-spacing:1px;transition:.3s;position:relative}
 .comms a:hover{background:var(--hud);color:var(--bg);box-shadow:0 0 24px var(--hud-glow)}
+
+.card .visit{margin:0 24px 24px;width:calc(100% - 48px);background:transparent;border:1px solid var(--hud);color:var(--hud);font-family:var(--font-mono);font-size:13px;letter-spacing:1px;padding:12px;cursor:pointer;transition:.3s;text-shadow:0 0 8px var(--hud-glow)}
+.card .visit:hover{background:var(--hud);color:var(--bg);box-shadow:0 0 22px var(--hud-glow)}
+.card .locked{margin:0 24px 24px;font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--amber);border:1px dashed rgba(255,179,64,.4);padding:12px;text-align:center}
+
+/* UPLINK OVERLAY */
+#uplink{position:fixed;inset:0;z-index:9500;background:rgba(2,6,10,.96);display:none;flex-direction:column;align-items:center;justify-content:center;gap:22px;font-family:var(--font-mono)}
+#uplink.on{display:flex}
+#uplink .ring{width:140px;height:140px;border:2px solid var(--hud-deep);border-top-color:var(--hud);border-right-color:var(--hud);border-radius:50%;animation:spin .8s linear infinite;box-shadow:0 0 30px var(--hud-glow)}
+#uplink .ulog{font-size:14px;color:var(--hud);text-shadow:0 0 8px var(--hud-glow);min-height:140px;width:380px;max-width:80vw}
+#uplink .ulog span{display:block;opacity:.9}
+#uplink .ubar{width:380px;max-width:80vw;height:5px;background:var(--hud-deep);border:1px solid var(--hud-dim);overflow:hidden}
+#uplink .ubar i{display:block;height:100%;width:0;background:var(--hud);box-shadow:0 0 14px var(--hud-glow);transition:width .1s linear}
+#uplink .target{color:var(--amber);font-size:13px;letter-spacing:2px;text-shadow:0 0 8px rgba(255,179,64,.5)}
 
 .reveal{opacity:0;transform:translateY(30px);transition:.8s cubic-bezier(.2,.7,.3,1)}
 .reveal.in{opacity:1;transform:none}
@@ -163,9 +179,16 @@ footer{text-align:center;padding:30px;font-family:var(--font-mono);font-size:11p
 <div class="bracket tl"></div><div class="bracket tr"></div>
 <div class="bracket bl"></div><div class="bracket br"></div>
 <div class="corner tl" id="cTime">SYS.TIME // --:--:--</div>
-<div class="corner tr">NIX.OS v4.8<br>STATUS: <span style="color:#5effa8">ONLINE</span></div>
+<div class="corner tr">TONY.OS v4.8<br>STATUS: <span style="color:#5effa8">ONLINE</span></div>
 <div class="corner bl">LAT -23.60 / LNG -46.79<br>SÃO PAULO // BR</div>
 <div class="corner br" id="cScroll">SCROLL // 000%</div>
+
+<div id="uplink">
+  <div class="ring"></div>
+  <div class="ubar"><i id="ubarFill"></i></div>
+  <div class="ulog" id="ulog"></div>
+  <div class="target" id="utarget"></div>
+</div>
 
 <main id="main">
 
@@ -185,7 +208,7 @@ footer{text-align:center;padding:30px;font-family:var(--font-mono);font-size:11p
     </svg>
   </div>
   <div class="tag">IDENTITY CONFIRMED // OPERATIVE</div>
-  <h1><span class="glitch" data-text="NIX">NIX</span><span class="sub">ANTONIO · FULL-STACK DEVELOPER</span></h1>
+  <h1><span class="glitch" data-text="TONY">TONY</span><span class="sub">ANTONIO · FULL-STACK DEVELOPER</span></h1>
   <div class="hero-meta">
     <div>ESPECIALIDADE<br><b>AI · WEB · REALTIME</b></div>
     <div>STACK<br><b>ANGULAR · NEXT · SUPABASE</b></div>
@@ -215,19 +238,21 @@ footer{text-align:center;padding:30px;font-family:var(--font-mono);font-size:11p
   <h2 class="reveal">EXPERIÊNCIA</h2>
   <div class="timeline">
     <div class="job reveal">
-      <div class="yr">[ EMPRESA_01 ]<br>20XX — 20XX</div>
+      <div class="yr">[ F1RST ]<br>2021 — PRESENTE</div>
       <div>
-        <h3>NOME DA EMPRESA</h3>
-        <div class="role">CARGO / FUNÇÃO</div>
-        <p>Placeholder — descreva aqui suas responsabilidades, tecnologias usadas e principais conquistas nesta posição. Substitua pelo conteúdo real.</p>
+        <h3>F1RST TECNOLOGIA</h3>
+        <div class="role">DESENVOLVEDOR FRONT-END SÊNIOR</div>
+        <p>Atuação no projeto do Pix rodando como webview em aplicativos mobile. Desenvolvimento de interfaces robustas e performáticas em Angular para um dos produtos financeiros de maior volume do país.</p>
+        <div class="tech"><span>ANGULAR</span><span>TYPESCRIPT</span><span>WEBVIEW</span><span>MOBILE</span></div>
       </div>
     </div>
     <div class="job reveal">
-      <div class="yr">[ EMPRESA_02 ]<br>20XX — 20XX</div>
+      <div class="yr">[ VALEMOBI ]<br>2018 — 2020</div>
       <div>
-        <h3>NOME DA EMPRESA</h3>
-        <div class="role">CARGO / FUNÇÃO</div>
-        <p>Placeholder — descreva aqui suas responsabilidades, tecnologias usadas e principais conquistas nesta posição. Substitua pelo conteúdo real.</p>
+        <h3>VALEMOBI</h3>
+        <div class="role">DESENVOLVEDOR FULL-STACK</div>
+        <p>Participação na criação do backoffice da empresa — gráficos e toda a camada de monitoramento dos projetos. Também integrei o time do TradeMap, atuando com Kotlin entre outras frentes full-stack.</p>
+        <div class="tech"><span>ANGULAR</span><span>JAVA</span><span>KOTLIN</span><span>COLDFUSION</span><span>POSTGRESQL</span><span>JAVASCRIPT</span></div>
       </div>
     </div>
   </div>
@@ -241,22 +266,25 @@ footer{text-align:center;padding:30px;font-family:var(--font-mono);font-size:11p
       <div class="scanline"></div>
       <div class="head"><span class="stat-led">DEPLOYED</span><span style="font-family:var(--font-mono);font-size:11px;color:var(--hud-dim)">PRJ-001</span></div>
       <h3>LOOTSENSE</h3>
-      <p>Plataforma de recomendação de jogos com IA. Taxonomia de 42 clusters semânticos, sistema de Identidade Gamer, base local enriquecida de ~4.000 games e busca híbrida com aliases.</p>
+      <p>Plataforma de recomendação de jogos com IA. Sistema de Identidade Gamer, base local enriquecida de ~4.000 games, busca híbrida com aliases e o modo "Roleta Gamer" de descoberta aleatória.</p>
       <div class="tech"><span>NEXT.JS</span><span>SUPABASE</span><span>IA</span><span>CLOUDFLARE</span></div>
+      <button class="visit" data-url="https://loot-sense.com">// ACESSAR SISTEMA</button>
     </div>
     <div class="card reveal">
       <div class="scanline"></div>
-      <div class="head"><span class="stat-led">DEPLOYED</span><span style="font-family:var(--font-mono);font-size:11px;color:var(--hud-dim)">PRJ-002</span></div>
+      <div class="head"><span class="stat-led" style="color:var(--amber)"><span style="background:var(--amber);box-shadow:0 0 8px var(--amber)"></span>POLISHING</span><span style="font-family:var(--font-mono);font-size:11px;color:var(--hud-dim)">PRJ-002</span></div>
       <h3>OTAKUARENA</h3>
-      <p>Quiz multiplayer de anime em tempo real. Engine de jogo com scoring server-side e anti-cheat via Edge Functions, lobby ao vivo e podium animado com Web Share.</p>
-      <div class="tech"><span>ANGULAR 17+</span><span>SUPABASE</span><span>TAILWIND</span><span>REALTIME</span></div>
+      <p>Quiz multiplayer de anime em tempo real. Engine de jogo com scoring server-side e anti-cheat via Edge Functions, lobby ao vivo e podium animado. Recebendo polimentos para o primeiro release.</p>
+      <div class="tech"><span>ANGULAR 17+</span><span>SUPABASE</span><span>REALTIME</span><span>VERCEL</span></div>
+      <div class="locked">// EM POLIMENTO · v1 EM BREVE</div>
     </div>
     <div class="card reveal">
       <div class="scanline"></div>
-      <div class="head"><span class="stat-led" style="color:var(--amber)"><span style="background:var(--amber);box-shadow:0 0 8px var(--amber)"></span>R&amp;D</span><span style="font-family:var(--font-mono);font-size:11px;color:var(--hud-dim)">PRJ-003</span></div>
-      <h3>[ PRÓXIMO ]</h3>
-      <p>Slot reservado para o próximo projeto. Tracker de hábitos gamificado estilo RPG ou comparador de preços hiperlocal — em fase de planejamento.</p>
-      <div class="tech"><span>TBD</span><span>ANGULAR</span><span>SUPABASE</span></div>
+      <div class="head"><span class="stat-led" style="color:var(--amber)"><span style="background:var(--amber);box-shadow:0 0 8px var(--amber)"></span>BUILDING</span><span style="font-family:var(--font-mono);font-size:11px;color:var(--hud-dim)">PRJ-003</span></div>
+      <h3>DESPERTE HÁBITOS</h3>
+      <p>Tracker de hábitos gamificado com estética de RPG: tarefas viram XP, progressão por níveis e mecânicas de jogo para criar consistência no dia a dia. Em fase final de desenvolvimento.</p>
+      <div class="tech"><span>ANGULAR</span><span>SUPABASE</span><span>GAMIFICATION</span></div>
+      <div class="locked">// EM DESENVOLVIMENTO · QUASE LÁ</div>
     </div>
   </div>
 </section>
@@ -266,18 +294,18 @@ footer{text-align:center;padding:30px;font-family:var(--font-mono);font-size:11p
   <h2 class="reveal">CONTATO</h2>
   <p class="reveal" style="text-align:center">Canal aberto. Para projetos, colaborações ou apenas trocar uma ideia sobre dev, IA ou anime.</p>
   <div class="comms reveal">
-    <a href="#">// GITHUB</a>
-    <a href="#">// LINKEDIN</a>
-    <a href="#">// EMAIL</a>
-    <a href="#">// X / TWITTER</a>
+    <a href="https://github.com/antonio-izilvane" target="_blank" rel="noopener">// GITHUB</a>
+    <a href="https://www.linkedin.com/in/antonio-izilvane/" target="_blank" rel="noopener">// LINKEDIN</a>
+    <a href="mailto:antonioizilvane@gmail.com">// EMAIL</a>
+    <a href="https://instagram.com/im.izilvane" target="_blank" rel="noopener">// INSTAGRAM</a>
   </div>
 </section>
 
-<footer>NIX.OS // ANTONIO © 2026 — BUILT IN SÃO PAULO // ALL SYSTEMS NOMINAL</footer>
+<footer>TONY.OS // ANTONIO © 2026 — BUILT IN SÃO PAULO // ALL SYSTEMS NOMINAL</footer>
 </main>
 
 <script>
-const lines=["INITIALIZING NIX.OS...","LOADING NEURAL INTERFACE...","MOUNTING ARC REACTOR...","CALIBRATING HUD MATRIX...","DECRYPTING DOSSIER...","ESTABLISHING COMMS LINK...","ALL SYSTEMS NOMINAL.","WELCOME, OPERATIVE."];
+const lines=["INITIALIZING TONY.OS...","LOADING NEURAL INTERFACE...","MOUNTING ARC REACTOR...","CALIBRATING HUD MATRIX...","DECRYPTING DOSSIER...","ESTABLISHING COMMS LINK...","ALL SYSTEMS NOMINAL.","WELCOME, OPERATIVE."];
 const log=document.getElementById('bootlog');
 let li=0;
 const bt=setInterval(()=>{
@@ -302,6 +330,29 @@ const cio=new IntersectionObserver((es)=>{es.forEach(e=>{
 counters.forEach(c=>cio.observe(c));
 
 addEventListener('scroll',()=>{const h=document.body.scrollHeight-innerHeight;const p=Math.round(scrollY/h*100);document.getElementById('cScroll').textContent='SCROLL // '+String(p).padStart(3,'0')+'%';});
+
+const uplink=document.getElementById('uplink');
+const ulog=document.getElementById('ulog');
+const ubar=document.getElementById('ubarFill');
+const utarget=document.getElementById('utarget');
+function launchUplink(url){
+  const host=url.replace(/^https?:\/\//,'').replace(/\/$/,'');
+  utarget.textContent='TARGET // '+host.toUpperCase();
+  ulog.innerHTML='';ubar.style.width='0';
+  uplink.classList.add('on');
+  const steps=["ESTABLISHING UPLINK...","HANDSHAKE CONFIRMED","ROUTING SECURE CHANNEL...","DECRYPTING ENDPOINT...","CONNECTION STABLE","LAUNCHING..."];
+  let i=0;
+  const t=setInterval(()=>{
+    if(i<steps.length){const s=document.createElement('span');s.textContent='> '+steps[i];ulog.appendChild(s);ubar.style.width=Math.round((i+1)/steps.length*100)+'%';i++;}
+    else{
+      clearInterval(t);
+      setTimeout(()=>{window.open(url,'_blank','noopener');uplink.classList.remove('on');},450);
+    }
+  },360);
+}
+document.querySelectorAll('.visit').forEach(btn=>{
+  btn.addEventListener('click',(e)=>{e.stopPropagation();launchUplink(btn.dataset.url);});
+});
 </script>
 </body>
 </html>
