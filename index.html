@@ -335,7 +335,7 @@ const uplink=document.getElementById('uplink');
 const ulog=document.getElementById('ulog');
 const ubar=document.getElementById('ubarFill');
 const utarget=document.getElementById('utarget');
-function launchUplink(url){
+function launchUplink(url,win){
   const host=url.replace(/^https?:\/\//,'').replace(/\/$/,'');
   utarget.textContent='TARGET // '+host.toUpperCase();
   ulog.innerHTML='';ubar.style.width='0';
@@ -346,12 +346,24 @@ function launchUplink(url){
     if(i<steps.length){const s=document.createElement('span');s.textContent='> '+steps[i];ulog.appendChild(s);ubar.style.width=Math.round((i+1)/steps.length*100)+'%';i++;}
     else{
       clearInterval(t);
-      setTimeout(()=>{window.open(url,'_blank','noopener');uplink.classList.remove('on');},450);
+      setTimeout(()=>{
+        // a aba já foi aberta no gesto de clique (necessário p/ iOS Safari não bloquear);
+        // aqui só redirecionamos. Fallback caso o navegador tenha barrado a abertura.
+        if(win&&!win.closed){win.location.href=url;}
+        else{window.open(url,'_blank','noopener');}
+        uplink.classList.remove('on');
+      },450);
     }
   },360);
 }
 document.querySelectorAll('.visit').forEach(btn=>{
-  btn.addEventListener('click',(e)=>{e.stopPropagation();launchUplink(btn.dataset.url);});
+  btn.addEventListener('click',(e)=>{
+    e.stopPropagation();
+    // abre a aba imediatamente, ainda dentro do gesto do usuário, e desvincula o opener
+    const win=window.open('about:blank','_blank');
+    if(win)win.opener=null;
+    launchUplink(btn.dataset.url,win);
+  });
 });
 </script>
 </body>
