@@ -294,10 +294,10 @@ footer{text-align:center;padding:30px;font-family:var(--font-mono);font-size:11p
   <h2 class="reveal">CONTATO</h2>
   <p class="reveal" style="text-align:center">Canal aberto. Para projetos, colaborações ou apenas trocar uma ideia sobre dev, IA ou anime.</p>
   <div class="comms reveal">
-    <a href="https://github.com/antonio-izilvane" target="_blank" rel="noopener">// GITHUB</a>
-    <a href="https://www.linkedin.com/in/antonio-izilvane/" target="_blank" rel="noopener">// LINKEDIN</a>
+    <a href="https://github.com/antonio-izilvane" target="_blank" rel="noopener" data-uplink="github">// GITHUB</a>
+    <a href="https://www.linkedin.com/in/antonio-izilvane/" target="_blank" rel="noopener" data-uplink="linkedin">// LINKEDIN</a>
     <a href="mailto:antonioizilvane@gmail.com">// EMAIL</a>
-    <a href="https://instagram.com/im.izilvane" target="_blank" rel="noopener">// INSTAGRAM</a>
+    <a href="https://instagram.com/im.izilvane" target="_blank" rel="noopener" data-uplink="instagram">// INSTAGRAM</a>
   </div>
 </section>
 
@@ -337,10 +337,18 @@ const ubar=document.getElementById('ubarFill');
 const utarget=document.getElementById('utarget');
 const UPLINK_STEPS=["ESTABLISHING UPLINK...","HANDSHAKE CONFIRMED","ROUTING SECURE CHANNEL...","DECRYPTING ENDPOINT...","CONNECTION STABLE","LAUNCHING..."];
 
+// Sequências temáticas (J.A.R.V.I.S. acessando) por destino.
+const UPLINK_PROFILES={
+  github:["J.A.R.V.I.S. ONLINE","AUTENTICANDO ASSINATURA STARK...","ACESSANDO ARQUIVO DE CÓDIGO-FONTE...","DESCRIPTOGRAFANDO REPOSITÓRIOS...","INTEGRIDADE DOS COMMITS // 100%","ABRINDO GITHUB..."],
+  linkedin:["J.A.R.V.I.S. ONLINE","VERIFICANDO IDENTIDADE PROFISSIONAL...","CARREGANDO DOSSIÊ CORPORATIVO...","MAPEANDO REDE DE CONEXÕES...","CREDENCIAIS VALIDADAS","ABRINDO LINKEDIN..."],
+  instagram:["J.A.R.V.I.S. ONLINE","CALIBRANDO FEED VISUAL...","SINCRONIZANDO TRANSMISSÃO DE MÍDIA...","RENDERIZANDO CONTEÚDO HOLOGRÁFICO...","CANAL SOCIAL ESTÁVEL","ABRINDO INSTAGRAM..."]
+};
+
 // Página de animação injetada DENTRO da aba de destino. Como no iOS Safari o foco
 // vai para a nova aba assim que ela abre, a animação roda onde o usuário está olhando
 // e, ao terminar, a própria aba se redireciona para o site final.
-function uplinkPageHTML(url){
+function uplinkPageHTML(url,steps){
+  steps=steps||UPLINK_STEPS;
   const host=url.replace(/^https?:\/\//,'').replace(/\/$/,'').toUpperCase();
   return '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">'
     +'<meta name="viewport" content="width=device-width,initial-scale=1.0">'
@@ -365,7 +373,7 @@ function uplinkPageHTML(url){
     +'<div class="ulog" id="l"></div>'
     +'<div class="target">TARGET // '+host+'</div>'
     +'<script>'
-    +'var steps='+JSON.stringify(UPLINK_STEPS)+',l=document.getElementById("l"),b=document.getElementById("b"),i=0;'
+    +'var steps='+JSON.stringify(steps)+',l=document.getElementById("l"),b=document.getElementById("b"),i=0;'
     +'var t=setInterval(function(){'
     +'if(i<steps.length){var s=document.createElement("span");s.textContent="> "+steps[i];l.appendChild(s);b.style.width=Math.round((i+1)/steps.length*100)+"%";i++;}'
     +'else{clearInterval(t);setTimeout(function(){location.replace('+JSON.stringify(url)+');},450);}'
@@ -374,14 +382,15 @@ function uplinkPageHTML(url){
 }
 
 // Fallback (somente se a aba não pôde ser aberta no clique): anima na página atual.
-function launchUplinkOverlay(url){
+function launchUplinkOverlay(url,steps){
+  steps=steps||UPLINK_STEPS;
   const host=url.replace(/^https?:\/\//,'').replace(/\/$/,'');
   utarget.textContent='TARGET // '+host.toUpperCase();
   ulog.innerHTML='';ubar.style.width='0';
   uplink.classList.add('on');
   let i=0;
   const t=setInterval(()=>{
-    if(i<UPLINK_STEPS.length){const s=document.createElement('span');s.textContent='> '+UPLINK_STEPS[i];ulog.appendChild(s);ubar.style.width=Math.round((i+1)/UPLINK_STEPS.length*100)+'%';i++;}
+    if(i<steps.length){const s=document.createElement('span');s.textContent='> '+steps[i];ulog.appendChild(s);ubar.style.width=Math.round((i+1)/steps.length*100)+'%';i++;}
     else{
       clearInterval(t);
       setTimeout(()=>{window.open(url,'_blank','noopener');uplink.classList.remove('on');},450);
@@ -389,21 +398,31 @@ function launchUplinkOverlay(url){
   },360);
 }
 
+// Abre a aba no gesto do clique e injeta a animação nela (com os passos do destino).
+function openUplink(url,steps){
+  const win=window.open('about:blank','_blank');
+  if(win){
+    win.opener=null;
+    win.document.open();
+    win.document.write(uplinkPageHTML(url,steps));
+    win.document.close();
+  }else{
+    // pop-up totalmente bloqueado: anima aqui e tenta abrir ao final
+    launchUplinkOverlay(url,steps);
+  }
+}
+
 document.querySelectorAll('.visit').forEach(btn=>{
   btn.addEventListener('click',(e)=>{
     e.stopPropagation();
-    const url=btn.dataset.url;
-    // abre a aba imediatamente, ainda dentro do gesto (evita o bloqueio do iOS Safari)
-    const win=window.open('about:blank','_blank');
-    if(win){
-      win.opener=null;
-      win.document.open();
-      win.document.write(uplinkPageHTML(url));
-      win.document.close();
-    }else{
-      // pop-up totalmente bloqueado: anima aqui e tenta abrir ao final
-      launchUplinkOverlay(url);
-    }
+    openUplink(btn.dataset.url);
+  });
+});
+
+document.querySelectorAll('[data-uplink]').forEach(link=>{
+  link.addEventListener('click',(e)=>{
+    e.preventDefault();
+    openUplink(link.href,UPLINK_PROFILES[link.dataset.uplink]);
   });
 });
 </script>
