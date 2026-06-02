@@ -335,34 +335,75 @@ const uplink=document.getElementById('uplink');
 const ulog=document.getElementById('ulog');
 const ubar=document.getElementById('ubarFill');
 const utarget=document.getElementById('utarget');
-function launchUplink(url,win){
+const UPLINK_STEPS=["ESTABLISHING UPLINK...","HANDSHAKE CONFIRMED","ROUTING SECURE CHANNEL...","DECRYPTING ENDPOINT...","CONNECTION STABLE","LAUNCHING..."];
+
+// Página de animação injetada DENTRO da aba de destino. Como no iOS Safari o foco
+// vai para a nova aba assim que ela abre, a animação roda onde o usuário está olhando
+// e, ao terminar, a própria aba se redireciona para o site final.
+function uplinkPageHTML(url){
+  const host=url.replace(/^https?:\/\//,'').replace(/\/$/,'').toUpperCase();
+  return '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">'
+    +'<meta name="viewport" content="width=device-width,initial-scale=1.0">'
+    +'<title>UPLINK // '+host+'</title>'
+    +'<link rel="preconnect" href="https://fonts.googleapis.com">'
+    +'<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">'
+    +'<style>'
+    +':root{--hud:#3ad7ff;--hud-dim:#1a7e9c;--hud-deep:#0a3a4a;--hud-glow:rgba(58,215,255,.55);--amber:#ffb340;--bg:#02060a}'
+    +'*{margin:0;padding:0;box-sizing:border-box}'
+    +'body{background:var(--bg);color:var(--hud);font-family:"Share Tech Mono",monospace;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;overflow:hidden}'
+    +'body::before{content:"";position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(58,215,255,.04) 0 1px,transparent 1px 3px);mix-blend-mode:screen}'
+    +'.ring{width:140px;height:140px;border:2px solid var(--hud-deep);border-top-color:var(--hud);border-right-color:var(--hud);border-radius:50%;animation:spin .8s linear infinite;box-shadow:0 0 30px var(--hud-glow)}'
+    +'@keyframes spin{to{transform:rotate(360deg)}}'
+    +'.ulog{font-size:14px;text-shadow:0 0 8px var(--hud-glow);min-height:160px;width:380px;max-width:80vw}'
+    +'.ulog span{display:block;opacity:.9}'
+    +'.ubar{width:380px;max-width:80vw;height:5px;background:var(--hud-deep);border:1px solid var(--hud-dim);overflow:hidden}'
+    +'.ubar i{display:block;height:100%;width:0;background:var(--hud);box-shadow:0 0 14px var(--hud-glow);transition:width .1s linear}'
+    +'.target{color:var(--amber);font-size:13px;letter-spacing:2px;text-shadow:0 0 8px rgba(255,179,64,.5)}'
+    +'</style></head><body>'
+    +'<div class="ring"></div>'
+    +'<div class="ubar"><i id="b"></i></div>'
+    +'<div class="ulog" id="l"></div>'
+    +'<div class="target">TARGET // '+host+'</div>'
+    +'<script>'
+    +'var steps='+JSON.stringify(UPLINK_STEPS)+',l=document.getElementById("l"),b=document.getElementById("b"),i=0;'
+    +'var t=setInterval(function(){'
+    +'if(i<steps.length){var s=document.createElement("span");s.textContent="> "+steps[i];l.appendChild(s);b.style.width=Math.round((i+1)/steps.length*100)+"%";i++;}'
+    +'else{clearInterval(t);setTimeout(function(){location.replace('+JSON.stringify(url)+');},450);}'
+    +'},360);'
+    +'<\/script></body></html>';
+}
+
+// Fallback (somente se a aba não pôde ser aberta no clique): anima na página atual.
+function launchUplinkOverlay(url){
   const host=url.replace(/^https?:\/\//,'').replace(/\/$/,'');
   utarget.textContent='TARGET // '+host.toUpperCase();
   ulog.innerHTML='';ubar.style.width='0';
   uplink.classList.add('on');
-  const steps=["ESTABLISHING UPLINK...","HANDSHAKE CONFIRMED","ROUTING SECURE CHANNEL...","DECRYPTING ENDPOINT...","CONNECTION STABLE","LAUNCHING..."];
   let i=0;
   const t=setInterval(()=>{
-    if(i<steps.length){const s=document.createElement('span');s.textContent='> '+steps[i];ulog.appendChild(s);ubar.style.width=Math.round((i+1)/steps.length*100)+'%';i++;}
+    if(i<UPLINK_STEPS.length){const s=document.createElement('span');s.textContent='> '+UPLINK_STEPS[i];ulog.appendChild(s);ubar.style.width=Math.round((i+1)/UPLINK_STEPS.length*100)+'%';i++;}
     else{
       clearInterval(t);
-      setTimeout(()=>{
-        // a aba já foi aberta no gesto de clique (necessário p/ iOS Safari não bloquear);
-        // aqui só redirecionamos. Fallback caso o navegador tenha barrado a abertura.
-        if(win&&!win.closed){win.location.href=url;}
-        else{window.open(url,'_blank','noopener');}
-        uplink.classList.remove('on');
-      },450);
+      setTimeout(()=>{window.open(url,'_blank','noopener');uplink.classList.remove('on');},450);
     }
   },360);
 }
+
 document.querySelectorAll('.visit').forEach(btn=>{
   btn.addEventListener('click',(e)=>{
     e.stopPropagation();
-    // abre a aba imediatamente, ainda dentro do gesto do usuário, e desvincula o opener
+    const url=btn.dataset.url;
+    // abre a aba imediatamente, ainda dentro do gesto (evita o bloqueio do iOS Safari)
     const win=window.open('about:blank','_blank');
-    if(win)win.opener=null;
-    launchUplink(btn.dataset.url,win);
+    if(win){
+      win.opener=null;
+      win.document.open();
+      win.document.write(uplinkPageHTML(url));
+      win.document.close();
+    }else{
+      // pop-up totalmente bloqueado: anima aqui e tenta abrir ao final
+      launchUplinkOverlay(url);
+    }
   });
 });
 </script>
