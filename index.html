@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NIX // Antonio — Dev Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --hud:#3ad7ff;
+  --hud-dim:#1a7e9c;
+  --hud-deep:#0a3a4a;
+  --hud-glow:rgba(58,215,255,.55);
+  --amber:#ffb340;
+  --bg:#02060a;
+  --bg2:#04101a;
+  --line:rgba(58,215,255,.18);
+  --font-display:'Orbitron',sans-serif;
+  --font-body:'Rajdhani',sans-serif;
+  --font-mono:'Share Tech Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--hud);
+  font-family:var(--font-body);
+  overflow-x:hidden;
+  min-height:100vh;
+  position:relative;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:9000;
+  background:repeating-linear-gradient(0deg,rgba(58,215,255,.04) 0 1px,transparent 1px 3px);
+  mix-blend-mode:screen;
+}
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:9001;
+  background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.55) 100%);
+}
+.grid-bg{
+  position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.35;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse at center,#000 35%,transparent 80%);
+}
+.scan{
+  position:fixed;left:0;right:0;height:140px;z-index:8000;pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(58,215,255,.07),transparent);
+  animation:scanmove 7s linear infinite;
+}
+@keyframes scanmove{0%{top:-140px}100%{top:100vh}}
+
+/* BOOT */
+#boot{
+  position:fixed;inset:0;z-index:10000;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:var(--font-mono);gap:14px;transition:opacity .8s ease;
+}
+#boot .ring{width:120px;height:120px;border:2px solid var(--hud-dim);border-top-color:var(--hud);border-radius:50%;animation:spin 1s linear infinite;box-shadow:0 0 24px var(--hud-glow)}
+@keyframes spin{to{transform:rotate(360deg)}}
+#boot .log{font-size:13px;color:var(--hud);min-height:120px;width:340px;max-width:80vw}
+#boot .log span{display:block;opacity:.85;text-shadow:0 0 6px var(--hud-glow)}
+.bar{width:340px;max-width:80vw;height:4px;background:var(--hud-deep);border:1px solid var(--hud-dim);position:relative;overflow:hidden}
+.bar i{position:absolute;inset:0;width:0;background:var(--hud);box-shadow:0 0 12px var(--hud-glow);animation:fill 2.6s ease forwards}
+@keyframes fill{to{width:100%}}
+
+/* CORNER HUD */
+.corner{position:fixed;z-index:7000;font-family:var(--font-mono);font-size:11px;color:var(--hud-dim);pointer-events:none;text-shadow:0 0 6px var(--hud-glow)}
+.corner.tl{top:16px;left:16px}.corner.tr{top:16px;right:16px;text-align:right}
+.corner.bl{bottom:16px;left:16px}.corner.br{bottom:16px;right:16px;text-align:right}
+.bracket{position:fixed;width:34px;height:34px;border:2px solid var(--hud);z-index:7000;pointer-events:none;opacity:.7;box-shadow:0 0 12px var(--hud-glow)}
+.bracket.tl{top:10px;left:10px;border-right:0;border-bottom:0}
+.bracket.tr{top:10px;right:10px;border-left:0;border-bottom:0}
+.bracket.bl{bottom:10px;left:10px;border-right:0;border-top:0}
+.bracket.br{bottom:10px;right:10px;border-left:0;border-top:0}
+
+/* CONTENT */
+main{position:relative;z-index:10;opacity:0;transition:opacity 1s ease}
+main.live{opacity:1}
+section{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:100px 7vw;position:relative}
+.tag{font-family:var(--font-mono);font-size:12px;letter-spacing:3px;color:var(--amber);text-shadow:0 0 8px rgba(255,179,64,.5);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.tag::before{content:"";width:36px;height:1px;background:var(--amber);box-shadow:0 0 8px rgba(255,179,64,.6)}
+
+/* HERO */
+#hero{align-items:flex-start}
+.reticle{position:absolute;right:6vw;top:50%;transform:translateY(-50%);width:min(40vw,440px);height:min(40vw,440px);opacity:.9}
+.reticle svg{width:100%;height:100%;filter:drop-shadow(0 0 10px var(--hud-glow))}
+.r-spin{transform-origin:center;animation:spin 18s linear infinite}
+.r-spin-rev{transform-origin:center;animation:spin 26s linear infinite reverse}
+h1{font-family:var(--font-display);font-weight:900;font-size:clamp(48px,9vw,128px);line-height:.92;letter-spacing:2px;color:#eafdff;text-shadow:0 0 18px var(--hud-glow),0 0 50px var(--hud-glow);position:relative}
+h1 .sub{display:block;font-size:clamp(14px,1.6vw,22px);font-weight:500;letter-spacing:8px;color:var(--hud);margin-top:18px;text-shadow:0 0 10px var(--hud-glow)}
+.glitch{position:relative}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;inset:0;}
+.glitch::before{color:#ff3a6e;animation:gl1 3.5s infinite steps(2);clip-path:inset(0 0 60% 0)}
+.glitch::after{color:var(--hud);animation:gl2 2.7s infinite steps(2);clip-path:inset(60% 0 0 0)}
+@keyframes gl1{0%,92%,100%{transform:translate(0)}93%{transform:translate(-3px,-2px)}96%{transform:translate(2px,1px)}}
+@keyframes gl2{0%,90%,100%{transform:translate(0)}91%{transform:translate(3px,2px)}97%{transform:translate(-2px,-1px)}}
+.hero-meta{margin-top:42px;display:flex;gap:28px;flex-wrap:wrap;font-family:var(--font-mono);font-size:13px;color:var(--hud-dim)}
+.hero-meta b{color:var(--hud);font-weight:400}
+
+/* PANELS */
+.panel{border:1px solid var(--line);background:linear-gradient(135deg,rgba(10,58,74,.25),rgba(4,16,26,.55));backdrop-filter:blur(2px);padding:26px 30px;position:relative;clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,18px 100%,0 calc(100% - 18px))}
+.panel::before{content:"";position:absolute;top:0;left:0;width:40px;height:2px;background:var(--hud);box-shadow:0 0 10px var(--hud-glow)}
+h2{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,4vw,52px);color:#eafdff;letter-spacing:2px;text-shadow:0 0 14px var(--hud-glow);margin-bottom:30px}
+p{font-size:clamp(15px,1.4vw,18px);line-height:1.7;color:#bfe9f5;max-width:62ch;font-weight:300}
+.about-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:start}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.stat{border:1px solid var(--line);padding:16px;text-align:center;background:rgba(4,16,26,.5)}
+.stat .n{font-family:var(--font-display);font-size:30px;font-weight:700;color:var(--hud);text-shadow:0 0 12px var(--hud-glow)}
+.stat .l{font-family:var(--font-mono);font-size:11px;letter-spacing:1px;color:var(--hud-dim);margin-top:6px}
+
+/* EXPERIENCE */
+.timeline{display:flex;flex-direction:column;gap:26px;max-width:880px}
+.job{display:grid;grid-template-columns:140px 1fr;gap:28px;border:1px solid var(--line);padding:24px 28px;background:linear-gradient(135deg,rgba(10,58,74,.2),rgba(4,16,26,.5));position:relative;transition:.35s}
+.job:hover{border-color:var(--hud);box-shadow:0 0 30px rgba(58,215,255,.15);transform:translateX(6px)}
+.job .yr{font-family:var(--font-mono);font-size:13px;color:var(--amber);text-shadow:0 0 8px rgba(255,179,64,.4)}
+.job h3{font-family:var(--font-display);font-size:20px;color:#eafdff;letter-spacing:1px;margin-bottom:4px}
+.job .role{font-family:var(--font-mono);font-size:12px;color:var(--hud);margin-bottom:12px;letter-spacing:1px}
+.job p{font-size:15px;color:#a9d6e3}
+
+/* PROJECTS */
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:26px}
+.card{border:1px solid var(--line);background:linear-gradient(160deg,rgba(10,58,74,.3),rgba(4,16,26,.6));padding:0;position:relative;overflow:hidden;transition:.4s;clip-path:polygon(0 0,calc(100% - 22px) 0,100% 22px,100% 100%,0 100%)}
+.card:hover{border-color:var(--hud);box-shadow:0 0 36px rgba(58,215,255,.22);transform:translateY(-6px)}
+.card .head{padding:22px 24px 0;display:flex;justify-content:space-between;align-items:flex-start}
+.card .stat-led{font-family:var(--font-mono);font-size:10px;letter-spacing:1px;color:#5effa8;display:flex;align-items:center;gap:6px}
+.card .stat-led::before{content:"";width:7px;height:7px;border-radius:50%;background:#5effa8;box-shadow:0 0 8px #5effa8;animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.3}}
+.card h3{font-family:var(--font-display);font-size:24px;color:#eafdff;letter-spacing:1px;padding:14px 24px 6px;text-shadow:0 0 12px var(--hud-glow)}
+.card p{padding:0 24px;font-size:14px;color:#a9d6e3;min-height:84px}
+.card .tech{display:flex;flex-wrap:wrap;gap:8px;padding:16px 24px 24px}
+.card .tech span{font-family:var(--font-mono);font-size:11px;color:var(--hud);border:1px solid var(--hud-dim);padding:3px 9px;letter-spacing:.5px}
+.card .scanline{position:absolute;left:0;right:0;height:2px;background:var(--hud);box-shadow:0 0 12px var(--hud-glow);opacity:0;animation:cardscan 4s linear infinite}
+.card:hover .scanline{opacity:.6}
+@keyframes cardscan{0%{top:0}100%{top:100%}}
+
+/* CONTACT */
+#contact{align-items:center;text-align:center}
+.comms{display:flex;gap:22px;margin-top:34px;flex-wrap:wrap;justify-content:center}
+.comms a{font-family:var(--font-mono);font-size:14px;color:var(--hud);text-decoration:none;border:1px solid var(--hud-dim);padding:14px 28px;letter-spacing:1px;transition:.3s;position:relative}
+.comms a:hover{background:var(--hud);color:var(--bg);box-shadow:0 0 24px var(--hud-glow)}
+
+.reveal{opacity:0;transform:translateY(30px);transition:.8s cubic-bezier(.2,.7,.3,1)}
+.reveal.in{opacity:1;transform:none}
+
+footer{text-align:center;padding:30px;font-family:var(--font-mono);font-size:11px;color:var(--hud-dim);border-top:1px solid var(--line);position:relative;z-index:10}
+@media(max-width:760px){.about-grid{grid-template-columns:1fr}.reticle{opacity:.25}.job{grid-template-columns:1fr;gap:10px}}
+</style>
+</head>
+<body>
+
+<div id="boot">
+  <div class="ring"></div>
+  <div class="bar"><i></i></div>
+  <div class="log" id="bootlog"></div>
+</div>
+
+<div class="grid-bg"></div>
+<div class="scan"></div>
+<div class="bracket tl"></div><div class="bracket tr"></div>
+<div class="bracket bl"></div><div class="bracket br"></div>
+<div class="corner tl" id="cTime">SYS.TIME // --:--:--</div>
+<div class="corner tr">NIX.OS v4.8<br>STATUS: <span style="color:#5effa8">ONLINE</span></div>
+<div class="corner bl">LAT -23.60 / LNG -46.79<br>SÃO PAULO // BR</div>
+<div class="corner br" id="cScroll">SCROLL // 000%</div>
+
+<main id="main">
+
+<section id="hero">
+  <div class="reticle">
+    <svg viewBox="0 0 200 200" fill="none" stroke="var(--hud)">
+      <circle class="r-spin" cx="100" cy="100" r="92" stroke-width="1" stroke-dasharray="4 8"/>
+      <circle class="r-spin-rev" cx="100" cy="100" r="74" stroke-width="1.5" stroke-dasharray="40 12 8 12"/>
+      <circle cx="100" cy="100" r="56" stroke-width="1" opacity=".5"/>
+      <circle class="r-spin" cx="100" cy="100" r="40" stroke-width="2" stroke-dasharray="60 20"/>
+      <circle cx="100" cy="100" r="6" fill="var(--hud)" stroke="none"/>
+      <line x1="100" y1="8" x2="100" y2="28" stroke-width="1"/>
+      <line x1="100" y1="172" x2="100" y2="192" stroke-width="1"/>
+      <line x1="8" y1="100" x2="28" y2="100" stroke-width="1"/>
+      <line x1="172" y1="100" x2="192" y2="100" stroke-width="1"/>
+      <path class="r-spin-rev" d="M100 44 A56 56 0 0 1 156 100" stroke="var(--amber)" stroke-width="2"/>
+    </svg>
+  </div>
+  <div class="tag">IDENTITY CONFIRMED // OPERATIVE</div>
+  <h1><span class="glitch" data-text="NIX">NIX</span><span class="sub">ANTONIO · FULL-STACK DEVELOPER</span></h1>
+  <div class="hero-meta">
+    <div>ESPECIALIDADE<br><b>AI · WEB · REALTIME</b></div>
+    <div>STACK<br><b>ANGULAR · NEXT · SUPABASE</b></div>
+    <div>BASE<br><b>BRASIL // PT-BR</b></div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="tag reveal">DOSSIER // 01</div>
+  <div class="about-grid">
+    <div class="panel reveal">
+      <h2>SOBRE</h2>
+      <p>Desenvolvedor full-stack solo focado em produtos digitais para o mercado brasileiro. Construo plataformas que unem inteligência artificial, cultura gamer e experiências em tempo real — do conceito ao deploy.</p>
+      <p style="margin-top:16px">Da arquitetura de dados ao frontend, trabalho o ciclo completo: estratégia, implementação e lançamento. Cada projeto é uma oportunidade de resolver um problema real com a stack certa e o menor custo possível.</p>
+    </div>
+    <div class="stats reveal">
+      <div class="stat"><div class="n" data-count="3">0</div><div class="l">PROJETOS ATIVOS</div></div>
+      <div class="stat"><div class="n" data-count="4000">0</div><div class="l">GAMES NA BASE</div></div>
+      <div class="stat"><div class="n" data-count="42">0</div><div class="l">CLUSTERS IA</div></div>
+      <div class="stat"><div class="n" data-count="100">0</div><div class="l">% SOLO DEV</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="exp">
+  <div class="tag reveal">SERVICE RECORD // 02</div>
+  <h2 class="reveal">EXPERIÊNCIA</h2>
+  <div class="timeline">
+    <div class="job reveal">
+      <div class="yr">[ EMPRESA_01 ]<br>20XX — 20XX</div>
+      <div>
+        <h3>NOME DA EMPRESA</h3>
+        <div class="role">CARGO / FUNÇÃO</div>
+        <p>Placeholder — descreva aqui suas responsabilidades, tecnologias usadas e principais conquistas nesta posição. Substitua pelo conteúdo real.</p>
+      </div>
+    </div>
+    <div class="job reveal">
+      <div class="yr">[ EMPRESA_02 ]<br>20XX — 20XX</div>
+      <div>
+        <h3>NOME DA EMPRESA</h3>
+        <div class="role">CARGO / FUNÇÃO</div>
+        <p>Placeholder — descreva aqui suas responsabilidades, tecnologias usadas e principais conquistas nesta posição. Substitua pelo conteúdo real.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="tag reveal">ARSENAL // 03</div>
+  <h2 class="reveal">PROJETOS</h2>
+  <div class="proj-grid">
+    <div class="card reveal">
+      <div class="scanline"></div>
+      <div class="head"><span class="stat-led">DEPLOYED</span><span style="font-family:var(--font-mono);font-size:11px;color:var(--hud-dim)">PRJ-001</span></div>
+      <h3>LOOTSENSE</h3>
+      <p>Plataforma de recomendação de jogos com IA. Taxonomia de 42 clusters semânticos, sistema de Identidade Gamer, base local enriquecida de ~4.000 games e busca híbrida com aliases.</p>
+      <div class="tech"><span>NEXT.JS</span><span>SUPABASE</span><span>IA</span><span>CLOUDFLARE</span></div>
+    </div>
+    <div class="card reveal">
+      <div class="scanline"></div>
+      <div class="head"><span class="stat-led">DEPLOYED</span><span style="font-family:var(--font-mono);font-size:11px;color:var(--hud-dim)">PRJ-002</span></div>
+      <h3>OTAKUARENA</h3>
+      <p>Quiz multiplayer de anime em tempo real. Engine de jogo com scoring server-side e anti-cheat via Edge Functions, lobby ao vivo e podium animado com Web Share.</p>
+      <div class="tech"><span>ANGULAR 17+</span><span>SUPABASE</span><span>TAILWIND</span><span>REALTIME</span></div>
+    </div>
+    <div class="card reveal">
+      <div class="scanline"></div>
+      <div class="head"><span class="stat-led" style="color:var(--amber)"><span style="background:var(--amber);box-shadow:0 0 8px var(--amber)"></span>R&amp;D</span><span style="font-family:var(--font-mono);font-size:11px;color:var(--hud-dim)">PRJ-003</span></div>
+      <h3>[ PRÓXIMO ]</h3>
+      <p>Slot reservado para o próximo projeto. Tracker de hábitos gamificado estilo RPG ou comparador de preços hiperlocal — em fase de planejamento.</p>
+      <div class="tech"><span>TBD</span><span>ANGULAR</span><span>SUPABASE</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="tag reveal" style="justify-content:center">COMMS LINK // 04</div>
+  <h2 class="reveal">CONTATO</h2>
+  <p class="reveal" style="text-align:center">Canal aberto. Para projetos, colaborações ou apenas trocar uma ideia sobre dev, IA ou anime.</p>
+  <div class="comms reveal">
+    <a href="#">// GITHUB</a>
+    <a href="#">// LINKEDIN</a>
+    <a href="#">// EMAIL</a>
+    <a href="#">// X / TWITTER</a>
+  </div>
+</section>
+
+<footer>NIX.OS // ANTONIO © 2026 — BUILT IN SÃO PAULO // ALL SYSTEMS NOMINAL</footer>
+</main>
+
+<script>
+const lines=["INITIALIZING NIX.OS...","LOADING NEURAL INTERFACE...","MOUNTING ARC REACTOR...","CALIBRATING HUD MATRIX...","DECRYPTING DOSSIER...","ESTABLISHING COMMS LINK...","ALL SYSTEMS NOMINAL.","WELCOME, OPERATIVE."];
+const log=document.getElementById('bootlog');
+let li=0;
+const bt=setInterval(()=>{
+  if(li<lines.length){const s=document.createElement('span');s.textContent="> "+lines[li];log.appendChild(s);li++;}
+  else clearInterval(bt);
+},300);
+setTimeout(()=>{
+  document.getElementById('boot').style.opacity='0';
+  setTimeout(()=>{document.getElementById('boot').style.display='none';document.getElementById('main').classList.add('live');},800);
+},2900);
+
+function tick(){const d=new Date();document.getElementById('cTime').textContent='SYS.TIME // '+d.toLocaleTimeString('pt-BR');}
+setInterval(tick,1000);tick();
+
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');}})},{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+const counters=document.querySelectorAll('[data-count]');
+const cio=new IntersectionObserver((es)=>{es.forEach(e=>{
+  if(e.isIntersecting){const el=e.target;const target=+el.dataset.count;let cur=0;const step=Math.max(1,Math.round(target/60));
+  const t=setInterval(()=>{cur+=step;if(cur>=target){cur=target;clearInterval(t);}el.textContent=cur.toLocaleString('pt-BR');},22);cio.unobserve(el);}})},{threshold:.5});
+counters.forEach(c=>cio.observe(c));
+
+addEventListener('scroll',()=>{const h=document.body.scrollHeight-innerHeight;const p=Math.round(scrollY/h*100);document.getElementById('cScroll').textContent='SCROLL // '+String(p).padStart(3,'0')+'%';});
+</script>
+</body>
+</html>
